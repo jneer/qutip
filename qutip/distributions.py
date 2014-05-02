@@ -406,8 +406,8 @@ class HarmonicOscillatorWaveFunction(Distribution):
         for n in range(N):
             k = pow(self.omega / pi, 0.25) / \
                 sqrt(2 ** n * factorial(n)) * \
-                exp(-self.xvecs[0] ** 2 / 2.0) * \
-                np.polyval(hermite(n), self.xvecs[0])
+                exp(-self.omega * self.xvecs[0] ** 2 / 2.0) * \
+                np.polyval(hermite(sqrt(self.omega) * n), self.xvecs[0])
 
             self.data += k * psi.data[n, 0]
 
@@ -437,14 +437,14 @@ class HarmonicOscillatorProbabilityFunction(Distribution):
 
         for m in range(M):
             k_m = pow(self.omega / pi, 0.25) / \
-                sqrt(2 ** m * factorial(m)) * \
-                exp(-self.xvecs[0] ** 2 / 2.0) * \
-                np.polyval(hermite(m), self.xvecs[0])
+                sqrt(2 ** n * factorial(n)) * \
+                exp(-self.omega * self.xvecs[0] ** 2 / 2.0) * \
+                np.polyval(hermite(sqrt(self.omega) * n), self.xvecs[0])
 
             for n in range(N):
                 k_n = pow(self.omega / pi, 0.25) / \
                     sqrt(2 ** n * factorial(n)) * \
-                    exp(-self.xvecs[0] ** 2 / 2.0) * \
-                    np.polyval(hermite(n), self.xvecs[0])
+                    exp(-self.omega * self.xvecs[0] ** 2 / 2.0) * \
+                    np.polyval(hermite(sqrt(self.omega) * n), self.xvecs[0])
 
                 self.data += np.conjugate(k_n) * k_m * rho.data[m, n]
