@@ -448,3 +448,50 @@ class HarmonicOscillatorProbabilityFunction(Distribution):
                     np.polyval(hermite(sqrt(self.omega) * n), self.xvecs[0])
 
                 self.data += np.conjugate(k_n) * k_m * rho.data[m, n]
+
+
+def xn_all(n_max, xvec, theta=0., omega=1.):
+    """Calculate the wavefunctions <x|n> for all Fock states |0>,...,|n_max>.
+    A phase factor can be included, corresponding to an arbitrary rotated
+    quadrature x * cos(theta) + p * sin(theta).
+
+    Parameters
+    ----------
+
+    n_max : integer
+        maximum photon number to include
+
+    xvec : array_like, float
+        array of quadrature values in which to evaluate
+
+    theta : float
+        phase factor
+
+    omega : float
+        scaling of the quadrature operator definition, [x,p] = i/s
+
+
+    Returns
+    -------
+
+    XN : array
+        <x|n> in an array of dim (len(x), n)
+
+    References
+    ----------
+
+    Using a recursive definition of the Hermite functions:
+    http://en.wikipedia.org/wiki/Hermite_polynomials#Hermite_functions
+
+    """
+    XN = zeros((len(atleast_1d(x)), n))
+    
+    XN[:,0] = pi**(-.25) * exp(-.5*x*x)
+    XN[:,1] = (2*sqrt(pi))**(-.5) * exp(-.5*x*x) * 2*x
+
+    for k in xrange(2, n):
+        XN[:,k] = sqrt(2./k) * (x * XN[:,k-1] - sqrt(.5*(k-1)) * XN[:,k-2])
+        
+    phases = exp(-1j * theta * arange(n))
+    
+    return phases * XN
